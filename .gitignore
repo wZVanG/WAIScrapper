@@ -1,3 +1,12 @@
+.wwebjs_auth
+.wwebjs_cache
+
+# Ignorar todo dentro de la carpeta temp
+temp/*
+
+# No ignorar la carpeta temp
+!temp/
+
 # Logs
 logs
 *.log

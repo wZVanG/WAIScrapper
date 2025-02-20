@@ -1,0 +1,37 @@
+{
+  "name": "waiscrapper",
+  "version": "1.0.0",
+  "description": "Automatización de noticias y contenido",
+  "main": "src/index.js",
+  "scripts": {
+    "preinstall": "npx playwright install",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wZVanG/WAIScrapper.git"
+  },
+  "keywords": [
+    "automatizacion",
+    "ai",
+    "playwright"
+  ],
+  "author": "Walter Chapilliquen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wZVanG/WAIScrapper/issues"
+  },
+  "homepage": "https://github.com/wZVanG/WAIScrapper#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "node-cache": "^5.1.2",
+    "playwright": "^1.50.1",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}
