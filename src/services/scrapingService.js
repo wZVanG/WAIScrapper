@@ -31,9 +31,7 @@ class ScrapingService {
                     return imgElement.getAttribute("src") || '';
                 };
 
-                const buildFullUrl = (path) => {
-                    return path ? `https://news.google.com${path}` : '';
-                };
+                const buildFullUrl = path => path ? `https://news.google.com${path}` : '';
 
                 return articles.slice(0, maxArticles)
                     .map(article => {
