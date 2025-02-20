@@ -7,7 +7,12 @@
     "preinstall": "npx playwright install",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "whatsapp": "node src/whatsapp.js",
+    "whatsapp:pm2": "pm2 start src/whatsapp.js --name waiscrapper-whatsapp",
+    "whatsapp:stop": "pm2 stop waiscrapper-whatsapp",
+    "whatsapp:restart": "pm2 restart waiscrapper-whatsapp",
+    "whatsapp:logs": "pm2 logs waiscrapper-whatsapp",
+    "whatsapp:status": "pm2 status waiscrapper-whatsapp"
   },
   "repository": {
     "type": "git",
