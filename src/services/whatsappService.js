@@ -5,6 +5,7 @@ const path = require('path');
 const ScrapingService = require('./scrapingService');
 const CacheService = require('./cacheService');
 const SubscriberService = require('./subscriberService');
+const UrlShortenerService = require('./urlShortenerService');
 
 class WhatsAppService {
     constructor() {
@@ -213,11 +214,14 @@ class WhatsAppService {
         try {
             news = subscriber.newsQueue[topic].shift();
 
+            // Acortar la URL antes de enviar el mensaje
+            const shortUrl = await UrlShortenerService.shortenUrl(news.link);
+
             const message = `📱 *${topic.toUpperCase()}*\n\n` +
                 `🗞️ *${news.title}*\n\n` +
                 `📰 ${news.source}\n` +
                 `⏰ ${new Date(news.time).toLocaleString()}\n\n` +
-                `🔗 ${news.link}`;
+                `🔗 ${shortUrl}`;
 
             // Enviar imagen si está disponible
             if (news.image) {
