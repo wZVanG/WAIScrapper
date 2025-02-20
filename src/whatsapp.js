@@ -14,7 +14,7 @@ async function main() {
     );*/
 
     // Actualizar un suscriptor existente
-    await WhatsAppService.updateSubscriber('51969508442@c.us', {
+    /*await WhatsAppService.updateSubscriber('51969508442@c.us', {
         topics: ['inteligencia artificial peru', 'blockchain peru'],
         topics: [
             'inteligencia artificial peru',
@@ -24,9 +24,9 @@ async function main() {
         ],
         interval: 1, // 10 minutos entre cada envío
         maxNewsAge: 7
-    });
+    });x
 
-    console.log('Suscriptor actualizado');
+    console.log('Suscriptor actualizado');*/
 }
 
 console.log('Iniciando servicio de WhatsApp...');

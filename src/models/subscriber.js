@@ -9,6 +9,7 @@ class Subscriber {
         this.topics = topics;
         this.interval = interval; // minutos
         this.maxNewsAge = maxNewsAge; // días máximos de antigüedad de noticias
+        this.isGroup = phoneNumber.endsWith('@g.us');
         this.lastSent = {};
         this.newsQueue = {};
 
@@ -22,14 +23,20 @@ class Subscriber {
     // Validaciones
     validatePhoneNumber(phoneNumber) {
         if (!phoneNumber) {
-            throw new Error('El número de teléfono es requerido');
+            throw new Error('El número de teléfono o ID de grupo es requerido');
         }
-        if (!phoneNumber.endsWith('@c.us')) {
-            throw new Error('El número de teléfono debe terminar en @c.us');
-        }
-        const digits = phoneNumber.replace('@c.us', '');
-        if (!/^\d{10,}$/.test(digits)) {
-            throw new Error('El número de teléfono debe tener al menos 10 dígitos');
+
+        if (phoneNumber.endsWith('@g.us')) {
+            // Es un grupo, no necesitamos más validación
+            return;
+        } else if (phoneNumber.endsWith('@c.us')) {
+            // Es un usuario individual, validar el número
+            const digits = phoneNumber.replace('@c.us', '');
+            if (!/^\d{10,}$/.test(digits)) {
+                throw new Error('El número de teléfono debe tener al menos 10 dígitos');
+            }
+        } else {
+            throw new Error('El identificador debe terminar en @g.us (grupo) o @c.us (usuario)');
         }
     }
 

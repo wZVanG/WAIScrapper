@@ -10,7 +10,8 @@ const config = {
     },
     scraping: {
         maxArticles: 20,
-        timeout: 30000
+        timeout: 30000,
+        showLogs: process.env.SHOW_SCRAPING_LOGS === undefined ? true : process.env.SHOW_SCRAPING_LOGS === 'true'
     }
 };
 

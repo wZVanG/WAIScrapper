@@ -302,6 +302,36 @@ class WhatsAppService {
     getSubscriber(phoneNumber) {
         return this.subscriberService.getSubscriber(phoneNumber);
     }
+
+    async getGroupId(groupName) {
+        try {
+            const chats = await this.client.getChats();
+            const group = chats.find(chat =>
+
+                chat.name.toLowerCase() === groupName.toLowerCase()
+            );
+
+            console.log(chats.map((({ id, name }) => console.log(id, name))));
+
+            return group ? group.id._serialized : null;
+        } catch (error) {
+            console.error('Error obteniendo ID del grupo:', error);
+            throw error;
+        }
+    }
+
+    async getAllChats() {
+        try {
+            const chats = await this.client.getChats();
+            return chats.map(chat => ({
+                id: chat.id._serialized,
+                name: chat.name
+            }));
+        } catch (error) {
+            console.error('Error obteniendo todos los chats:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = new WhatsAppService();

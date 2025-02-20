@@ -10,14 +10,21 @@ const defaultSubscribers = [
     {
         phoneNumber: '51969508442@c.us',
         topics: [
-            'inteligencia artificial peru',
-            'inteligencia artificial',
-            'tecnologia peru',
-            'musica'
+            'inteligencia artificial programacion',
+            'messi'
         ],
-        interval: 30, // 10 minutos entre cada envío
+        interval: 1, // 10 minutos entre cada envío
         maxNewsAge: 7 // máximo 5 días de antigüedad
     },
+    {
+        phoneNumber: '120363385130632882@g.us',
+        topics: [
+            'tecnologia peru',
+            'inteligencia artificial peru'
+        ],
+        interval: 30,
+        maxNewsAge: 7
+    }
     // Ejemplo de otro suscriptor
     // {
     //     phoneNumber: '51999999999@c.us',
@@ -35,7 +42,7 @@ const defaultSubscribers = [
  */
 function validateSubscriberConfig(subscriber) {
     // Validar número de teléfono
-    if (!subscriber.phoneNumber?.endsWith('@c.us')) {
+    if (!subscriber.phoneNumber?.endsWith('.us')) {
         throw new Error(`Número de teléfono inválido: ${subscriber.phoneNumber}`);
     }
 

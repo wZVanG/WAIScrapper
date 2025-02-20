@@ -1,46 +1,8 @@
 const fs = require('fs').promises;
 const path = require('path');
+const Subscriber = require('../models/subscriber');
 
 const { defaultSubscribers, validateSubscriberConfig } = require('../config/subscribers');
-
-
-class Subscriber {
-    constructor(phoneNumber, topics, interval = 10, maxNewsAge = 5) {
-        this.phoneNumber = phoneNumber;
-        this.topics = topics;
-        this.interval = interval; // minutos
-        this.maxNewsAge = maxNewsAge; // días máximos de antigüedad de noticias
-        this.lastSent = {};
-        this.newsQueue = {};
-
-        // Inicializar cola y último envío para cada tema
-        topics.forEach(topic => {
-            this.newsQueue[topic] = [];
-            this.lastSent[topic] = new Date(0).toISOString();
-        });
-    }
-
-    toJSON() {
-        return {
-            phoneNumber: this.phoneNumber,
-            topics: this.topics,
-            interval: this.interval,
-            maxNewsAge: this.maxNewsAge,
-            lastSent: this.lastSent
-        };
-    }
-
-    static fromJSON(json) {
-        const subscriber = new Subscriber(
-            json.phoneNumber,
-            json.topics,
-            json.interval,
-            json.maxNewsAge
-        );
-        subscriber.lastSent = json.lastSent || {};
-        return subscriber;
-    }
-}
 
 class SubscriberService {
     constructor() {
@@ -78,7 +40,8 @@ class SubscriberService {
                             sub.phoneNumber,
                             sub.topics,
                             sub.interval,
-                            sub.maxNewsAge
+                            sub.maxNewsAge,
+                            sub.isGroup
                         )
                     );
                 });
@@ -105,28 +68,29 @@ class SubscriberService {
 
     async addSubscriber(phoneNumber, topics, interval = 10, maxNewsAge = 5) {
         try {
-            // Validar número de teléfono
-            if (!phoneNumber.endsWith('@c.us')) {
-                phoneNumber = `${phoneNumber}@c.us`;
-            }
-
-            // Validar temas
-            if (!Array.isArray(topics) || topics.length === 0) {
-                throw new Error('Se requiere al menos un tema');
-            }
-
-            // Validar intervalos
-            interval = Math.max(1, Math.min(interval, 60)); // Entre 1 y 60 minutos
-            maxNewsAge = Math.max(1, Math.min(maxNewsAge, 30)); // Entre 1 y 30 días
-
-            const subscriber = new Subscriber(phoneNumber, topics, interval, maxNewsAge);
-            this.subscribers.set(phoneNumber, subscriber);
+            const normalizedId = this.normalizeId(phoneNumber);
+            const subscriber = new Subscriber(normalizedId, topics, interval, maxNewsAge);
+            this.subscribers.set(normalizedId, subscriber);
             await this.saveSubscribers();
             return subscriber;
         } catch (error) {
             console.error('Error agregando suscriptor:', error);
             throw error;
         }
+    }
+
+    normalizeId(id) {
+        if (!id) throw new Error('ID requerido');
+
+        // Eliminar espacios y caracteres especiales
+        let normalized = id.replace(/[^\d@g.us@c.us]/g, '');
+
+        // Validar que termine en uno de los sufijos válidos
+        if (!normalized.endsWith('@g.us') && !normalized.endsWith('@c.us')) {
+            throw new Error('El ID debe terminar en @g.us (grupo) o @c.us (usuario)');
+        }
+
+        return normalized;
     }
 
     async updateSubscriber(phoneNumber, updates) {
@@ -188,27 +152,6 @@ class SubscriberService {
 
     getAllSubscribers() {
         return Array.from(this.subscribers.values());
-    }
-
-    // Método para validar y normalizar número de teléfono
-    normalizePhoneNumber(phoneNumber) {
-        if (!phoneNumber) throw new Error('Número de teléfono requerido');
-
-        // Eliminar todos los caracteres no numéricos excepto @c.us
-        let normalized = phoneNumber.replace(/[^\d@c.us]/g, '');
-
-        // Si no tiene el sufijo @c.us, agregarlo
-        if (!normalized.endsWith('@c.us')) {
-            normalized = `${normalized}@c.us`;
-        }
-
-        // Validar que tenga al menos 10 dígitos antes del @c.us
-        const digits = normalized.replace('@c.us', '');
-        if (digits.length < 10) {
-            throw new Error('Número de teléfono inválido');
-        }
-
-        return normalized;
     }
 }
 
